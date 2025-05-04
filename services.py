@@ -1,7 +1,25 @@
 import os
+import requests
 import time
 from openai import OpenAI
 from dotenv import load_dotenv
+history = [{"role": "system", "content": "You are a helpful assistant who answers questions concisely."}]
+OLLAMA_URL = os.getenv("OLLAMA_HOST", "http://ollama:11434")
+
+def local_chat(prompt: str):
+    history.append({"role": "user", "content": prompt})
+    response = requests.post(
+        f"{OLLAMA_URL}/api/chat",
+        json={
+            "model": "llama3",
+            "messages": history,
+            "stream": False,
+        }
+    )
+    response.raise_for_status()
+    response = response.json()["message"]["content"]
+    history.append({"role": "assistant", "content": response})
+    return response
 
 def chat(prompt: str):
     load_dotenv()
