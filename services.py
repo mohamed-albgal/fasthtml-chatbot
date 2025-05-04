@@ -22,6 +22,7 @@ def chat(prompt: str):
         )
         return completion.choices[0].message.content
     except Exception as e:
+        print(f"Error: {e}")
         return "Error at this time.."
 
 
