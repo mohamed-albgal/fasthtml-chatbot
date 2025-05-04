@@ -4,70 +4,28 @@ from components import *
 from services import chat
 css = Style(':root {--pico-font-size:90%,--pico-font-family: Pacifico, cursive;}')
 app = FastHTML(hdrs=(picolink, css))
-messages = []
-questions = []
-responses = []
 
 @app.get('/')
 def home():
-    body = Body(
-        get_routes(),
-        post_routes(),
-        Card(
-            *[P(m) for m in (messages if messages else ["No messages yet!"])]
-        )
-    )
-
-    head = Head(Title('My Page'))
-    return (head, Container(body))
-
-
-@app.get('/{greeting}/{name}')
-def some_func(greeting: str, name: str):
-    greeting = greeting.capitalize() if greeting else "Hello"
-    name = name.capitalize() if name else "World"
-    return (
-        Card('body', header=P('head'), footer=P('foot')),
-        Head(Title('Echo params:')),
-        Container(H1(f'{greeting} {name}'))
-    )
-
-@app.get('/new_message')
-def new_message():
-    return Container(P("Add a message with the form below:"),
-                Form(Input(type="text", name="data"),
-                    Button("Submit"), action="/message", method="post")
-                 )
-
-@app.post("/message")
-def post_message(data:str):
-    messages.append(data)
-    return home()
-
-
-@app.get('/ask')
-def ask():
-    zeromd_headers = []
-
-    return Container(
+    return Body(Container(
         Head(Script(type="module", src="https://cdn.jsdelivr.net/npm/zero-md@3?register")),
-        Card(
-            # *[P(render_local_md(r)) for r in (responses)]
-            # *[(Sub(q),P(render_local_md(r))) for r in (responses) for q in (questions)]
-            *[(Sub(q), P(render_local_md(r))) for q, r in zip(questions, responses)]
-        ),
+        Container( PicoBusy(), id="response-container"),
         P("Ask a question:"),
         Form(Input(type="text", name="data"),
-            Button("Submit"), action="/ask", method="post")
-    )
+             Button("Submit",
+             action="/", method="post",
+             **{
+                 "hx-post": "/",
+                 "hx-target": "#response-container",
+                 "hx-swap": "beforeend",
+             }),
+        )
+    ))
 
-@app.post("/ask")
-def post_ask(data:str):
-    questions.append(data)
+@app.post("/")
+def ask(data:str):
     response = chat(data)
-    responses.append(response)
-    return ask()
-
+    return Card(Sub(data), P(render_local_md(response)))
 
 def render_local_md(md, css = ''):
     css_template = Template(Style(css), data_append=True)

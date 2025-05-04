@@ -1,4 +1,5 @@
 import os
+import time
 from openai import OpenAI
 from dotenv import load_dotenv
 
@@ -26,7 +27,12 @@ def chat(prompt: str):
         }
       ]
     )
-    return completion.choices[0].message.content
+    try:
+        1/0
+        return completion.choices[0].message.content
+    except Exception as e:
+        time.sleep(2)
+        return "Error at this time.."
 
 
 def modified(prompt: str):
