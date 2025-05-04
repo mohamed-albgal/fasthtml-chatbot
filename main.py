@@ -10,9 +10,8 @@ def home():
     return Body(Container(
         Head(Script(type="module", src="https://cdn.jsdelivr.net/npm/zero-md@3?register")),
         Container( PicoBusy(), id="response-container"),
-        P("Ask a question:"),
-        Form(Input(type="text", name="data"),
-             Button("Submit",
+        Form(Input(id="ask-input", type="text", name="data"),
+             Button("Submit", id="submit-button",
              action="/", method="post",
              **{
                  "hx-post": "/",
@@ -30,18 +29,19 @@ def ask(data:str):
 def render_local_md(md, css = ''):
     css_template = Template(Style(css), data_append=True)
     return (Container(
-                Zero_md(css_template, Script(md, type="text/markdown")),
-                Hr()
-            ))
+            Zero_md(css_template, Script(md, type="text/markdown")),
+            Hr(),
+            Input(id="ask-input", type="text", name="data", **{"hx-swap-oob": "true"}),
+    ))
 
 serve()
 """
 Todo tasks
-    no page reload
     stream the content
-    style the page
+    style the page, navbar etc
     expolore more depth about context and instructions (more than the rudimentary prompt appending)
     deploy a basic version
 
+    DONE -- no page reload
     DONE -- show as markdown
 """
