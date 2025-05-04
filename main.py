@@ -35,13 +35,3 @@ def render_local_md(md, css = ''):
     ))
 
 serve()
-"""
-Todo tasks
-    stream the content
-    style the page, navbar etc
-    expolore more depth about context and instructions (more than the rudimentary prompt appending)
-    deploy a basic version
-
-    DONE -- no page reload
-    DONE -- show as markdown
-"""

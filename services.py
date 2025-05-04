@@ -4,10 +4,6 @@ from openai import OpenAI
 from dotenv import load_dotenv
 
 def chat(prompt: str):
-    """
-    This function calls chat service and returns the response.
-    """
-    # Load environment variables from .env file
     load_dotenv()
     client = OpenAI(
       base_url="https://openrouter.ai/api/v1",
