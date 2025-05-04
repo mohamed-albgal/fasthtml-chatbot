@@ -15,6 +15,10 @@ def chat(prompt: str):
           model="deepseek/deepseek-chat-v3-0324:free",
           messages=[
             {
+              "role": "system",
+              "content": "You are a helpful assistant who answers questions concisely."
+            },
+            {
               "role": "user",
               "content": modified(prompt)
             }
@@ -23,10 +27,4 @@ def chat(prompt: str):
         return completion.choices[0].message.content
     except Exception as e:
         print(f"Error: {e}")
-        return "Error at this time.."
-
-
-def modified(prompt: str):
-    suffix = " (Make the response concise and to the point.)"
-    return prompt + suffix
-
+        return  "### Anyone have a good question for us?"
